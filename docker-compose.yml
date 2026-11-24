@@ -17,6 +17,8 @@ services:
     container_name: wiki-app
     depends_on:
       - postgres
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/wiki
     ports:
       - "8080:8080"
 

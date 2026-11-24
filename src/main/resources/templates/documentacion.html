@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación - Bizagi2</title>
+    <link rel="stylesheet" th:href="@{/css/stylesdocumentacion.css}">
+</head>
+<body>
+<div class="doc-layout">
+
+    <nav class="doc-nav">
+        <h3>Contenido</h3>
+        <ul>
+            <li><a href="#descripcion">Descripción</a></li>
+            <li><a href="#tecnologias">Tecnologías</a></li>
+            <li><a href="#arquitectura">Arquitectura</a></li>
+            <li><a href="#modelo-datos">Modelo de datos</a></li>
+            <li><a href="#endpoints">Endpoints</a></li>
+            <li><a href="#contacto">Formulario de contacto</a></li>
+            <li><a href="#ejecucion">Ejecución</a></li>
+            <li><a href="#equipo">Equipo</a></li>
+        </ul>
+        <a class="volver" th:href="@{/grupo}">&larr; Volver a la wiki</a>
+    </nav>
+
+    <main class="doc-main">
+        <header>
+            <h1>Documentación del proyecto Bizagi2</h1>
+            <p>Wiki Backend: aplicación web con Spring Boot para presentar al equipo de trabajo.</p>
+        </header>
+
+        <section class="doc" id="descripcion">
+            <h2>Descripción</h2>
+            <p>La wiki muestra la información de los integrantes del equipo y permite enviar mensajes
+               mediante un formulario de contacto. Los datos se guardan en PostgreSQL y las vistas se
+               generan dinámicamente con Thymeleaf.</p>
+        </section>
+
+        <section class="doc" id="tecnologias">
+            <h2>Tecnologías</h2>
+            <table>
+                <tr><th>Componente</th><th>Uso</th></tr>
+                <tr><td>Java 21 / Spring Boot 4</td><td>Backend y servidor web</td></tr>
+                <tr><td>Spring Data JPA / Hibernate</td><td>Persistencia</td></tr>
+                <tr><td>Thymeleaf</td><td>Motor de plantillas HTML</td></tr>
+                <tr><td>Bean Validation</td><td>Validación del formulario de contacto</td></tr>
+                <tr><td>PostgreSQL</td><td>Base de datos <code>wiki</code></td></tr>
+                <tr><td>Maven, Docker, Docker Compose</td><td>Construcción y despliegue</td></tr>
+            </table>
+        </section>
+
+        <section class="doc" id="arquitectura">
+            <h2>Arquitectura</h2>
+            <p>Arquitectura por capas:</p>
+<pre><code>Navegador -> Controller -> Repository (Spring Data JPA) -> PostgreSQL
+                 |
+                 +-> Plantilla Thymeleaf -> HTML</code></pre>
+            <table>
+                <tr><th>Paquete</th><th>Contenido</th></tr>
+                <tr><td><code>controller</code></td><td><code>InicioController</code>, <code>EstudianteController</code>, <code>ContactoController</code>, <code>DocumentacionController</code></td></tr>
+                <tr><td><code>entities</code></td><td><code>Estudiante</code>, <code>Contacto</code></td></tr>
+                <tr><td><code>repository</code></td><td><code>EstudianteRepository</code>, <code>ContactoRepository</code></td></tr>
+                <tr><td><code>resources/templates</code></td><td>Vistas Thymeleaf</td></tr>
+                <tr><td><code>resources/static</code></td><td>CSS e imágenes</td></tr>
+            </table>
+        </section>
+
+        <section class="doc" id="modelo-datos">
+            <h2>Modelo de datos</h2>
+            <h3>Tabla <code>estudiantes</code></h3>
+            <table>
+                <tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+                <tr><td>id</td><td>Integer (PK, autoincremental)</td><td>Identificador</td></tr>
+                <tr><td>nombre, apellido, email</td><td>String</td><td>Datos personales</td></tr>
+                <tr><td>edad, semestre</td><td>int</td><td>Datos académicos</td></tr>
+                <tr><td>imageUrl</td><td>String</td><td>Archivo en <code>/images</code></td></tr>
+                <tr><td>descripcion</td><td>String</td><td>Presentación del estudiante</td></tr>
+            </table>
+            <p>Los datos iniciales se cargan desde <code>data.sql</code> al arrancar.</p>
+            <h3>Tabla <code>contactos</code></h3>
+            <table>
+                <tr><th>Campo</th><th>Validación</th></tr>
+                <tr><td>nombre</td><td>Obligatorio, 2 a 100 caracteres</td></tr>
+                <tr><td>email</td><td>Obligatorio, formato de correo válido</td></tr>
+                <tr><td>asunto</td><td>Obligatorio, 3 a 150 caracteres</td></tr>
+                <tr><td>mensaje</td><td>Obligatorio, 10 a 1000 caracteres</td></tr>
+                <tr><td>created_at</td><td>Se asigna automáticamente al guardar</td></tr>
+            </table>
+        </section>
+
+        <section class="doc" id="endpoints">
+            <h2>Endpoints</h2>
+            <table>
+                <tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr>
+                <tr><td>GET</td><td><code>/</code></td><td>Redirige a <code>/grupo</code></td></tr>
+                <tr><td>GET</td><td><code>/grupo</code></td><td>Lista de integrantes del equipo</td></tr>
+                <tr><td>GET</td><td><code>/estudiantes/{nombre}</code></td><td>Perfil de un estudiante; muestra la vista de error si no existe</td></tr>
+                <tr><td>GET</td><td><code>/contacto</code></td><td>Formulario de contacto</td></tr>
+                <tr><td>POST</td><td><code>/contacto</code></td><td>Valida y guarda el mensaje en PostgreSQL</td></tr>
+                <tr><td>GET</td><td><code>/documentacion</code></td><td>Esta página</td></tr>
+            </table>
+        </section>
+
+        <section class="doc" id="contacto">
+            <h2>Formulario de contacto</h2>
+            <p>Se accede desde <code>/grupo</code> con el botón <strong>Contáctanos</strong>. Si los datos son
+               inválidos, se vuelve a mostrar el formulario con los errores; si son correctos, se guarda el
+               mensaje y se muestra una confirmación. Consulta de los mensajes guardados:</p>
+<pre><code>SELECT id, nombre, email, asunto, mensaje, created_at
+FROM contactos
+ORDER BY created_at DESC;</code></pre>
+        </section>
+
+        <section class="doc" id="ejecucion">
+            <h2>Ejecución</h2>
+            <h3>Con Docker</h3>
+<pre><code>docker compose up --build</code></pre>
+            <h3>Sin Docker</h3>
+            <p>Requiere PostgreSQL local con la base <code>wiki</code>. La conexión se configura con las variables
+               <code>DB_URL</code>, <code>DB_USER</code> y <code>DB_PASSWORD</code>
+               (por defecto <code>jdbc:postgresql://localhost:5432/wiki</code>, <code>postgres</code> y <code>javeriana</code>).</p>
+<pre><code>.\mvnw.cmd spring-boot:run</code></pre>
+            <p>La aplicación queda en <code>http://localhost:8080</code>.</p>
+        </section>
+
+        <section class="doc" id="equipo">
+            <h2>Equipo</h2>
+            <ul>
+                <li th:each="e : ${estudiantes}" th:text="${e.nombre + ' ' + e.apellido}"></li>
+            </ul>
+        </section>
+
+        <footer><p>&copy; 2026 Wiki del Equipo</p></footer>
+    </main>
+</div>
+</body>
+</html>
