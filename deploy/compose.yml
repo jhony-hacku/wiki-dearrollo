@@ -1,0 +1,37 @@
+# Wiki del equipo en el servidor. Solo publica el puerto en la propia maquina (127.0.0.1);
+# Tailscale Funnel lo expone por HTTPS en el puerto 8443.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_USER: wiki
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env}
+    volumes:
+      - wiki_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wiki -d wiki"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    mem_limit: 256m
+
+  wiki:
+    image: ghcr.io/jhony-hacku/wiki-dearrollo:${WIKI_TAG:-latest}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/wiki
+      DB_USER: wiki
+      DB_PASSWORD: ${DB_PASSWORD}
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70
+      SPRING_JPA_SHOW_SQL: "false"
+    ports:
+      - "127.0.0.1:${WIKI_PORT:-8081}:8080"
+    mem_limit: 512m
+
+volumes:
+  wiki_data:

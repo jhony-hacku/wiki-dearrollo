@@ -12,13 +12,12 @@
     <nav class="doc-nav">
         <h3>Contenido</h3>
         <ul>
-            <li><a href="#descripcion">Descripción</a></li>
-            <li><a href="#tecnologias">Tecnologías</a></li>
+            <li><a href="#proyecto">El proyecto</a></li>
+            <li><a href="#enlaces">Enlaces</a></li>
+            <li><a href="#calidad">Calidad en cifras</a></li>
             <li><a href="#arquitectura">Arquitectura</a></li>
-            <li><a href="#modelo-datos">Modelo de datos</a></li>
-            <li><a href="#endpoints">Endpoints</a></li>
-            <li><a href="#contacto">Formulario de contacto</a></li>
-            <li><a href="#ejecucion">Ejecución</a></li>
+            <li><a href="#despliegue">Despliegue</a></li>
+            <li><a href="#documentos">Documentos de la entrega</a></li>
             <li><a href="#equipo">Equipo</a></li>
         </ul>
         <a class="volver" th:href="@{/grupo}">&larr; Volver a la wiki</a>
@@ -26,102 +25,97 @@
 
     <main class="doc-main">
         <header>
-            <h1>Documentación del proyecto Bizagi2</h1>
-            <p>Wiki Backend: aplicación web con Spring Boot para presentar al equipo de trabajo.</p>
+            <h1>Bizagi2: documentación del proyecto</h1>
+            <p>Modelador web de procesos BPMN 2.0 multiempresa · Desarrollo Web · Pontificia Universidad Javeriana · versión 1.2.0</p>
         </header>
 
-        <section class="doc" id="descripcion">
-            <h2>Descripción</h2>
-            <p>La wiki muestra la información de los integrantes del equipo y permite enviar mensajes
-               mediante un formulario de contacto. Los datos se guardan en PostgreSQL y las vistas se
-               generan dinámicamente con Thymeleaf.</p>
+        <section class="doc" id="proyecto">
+            <h2>El proyecto</h2>
+            <p>Bizagi2 permite a cada empresa modelar sus procesos con BPMN 2.0 desde el navegador: pools y lanes asociadas a
+               roles de proceso, actividades, gateways, eventos, arcos con condiciones y mensajes entre pools con clave de
+               correlación. Cada empresa ve solo sus procesos; los usuarios tienen roles (creador, administrador, editor y lector),
+               cada cambio queda en un historial y los procesos se pueden compartir en solo lectura con otra empresa.</p>
+            <table>
+                <tr><th>Capa</th><th>Tecnología</th></tr>
+                <tr><td>Frontend</td><td>Angular 22 y bpmn-js 18, servido por nginx</td></tr>
+                <tr><td>Backend</td><td>Java 25, Spring Boot 4.1, Spring Security con JWT</td></tr>
+                <tr><td>Base de datos</td><td>PostgreSQL 17 con migraciones Flyway y réplica en streaming</td></tr>
+                <tr><td>Operación</td><td>Docker Compose, GitHub Actions, GHCR, Tailscale, SonarCloud</td></tr>
+            </table>
         </section>
 
-        <section class="doc" id="tecnologias">
-            <h2>Tecnologías</h2>
-            <table>
-                <tr><th>Componente</th><th>Uso</th></tr>
-                <tr><td>Java 21 / Spring Boot 4</td><td>Backend y servidor web</td></tr>
-                <tr><td>Spring Data JPA / Hibernate</td><td>Persistencia</td></tr>
-                <tr><td>Thymeleaf</td><td>Motor de plantillas HTML</td></tr>
-                <tr><td>Bean Validation</td><td>Validación del formulario de contacto</td></tr>
-                <tr><td>PostgreSQL</td><td>Base de datos <code>wiki</code></td></tr>
-                <tr><td>Maven, Docker, Docker Compose</td><td>Construcción y despliegue</td></tr>
-            </table>
+        <section class="doc" id="enlaces">
+            <h2>Enlaces</h2>
+            <ul>
+                <li>Aplicación en producción: <a href="https://bizagi2-prod.taila4ff03.ts.net">bizagi2-prod.taila4ff03.ts.net</a></li>
+                <li>Repositorio del backend: <a href="https://github.com/jhony-hacku/Bizagi2_backend">jhony-hacku/Bizagi2_backend</a></li>
+                <li>Repositorio del frontend: <a href="https://github.com/jhony-hacku/Bizagi2_front">jhony-hacku/Bizagi2_front</a></li>
+                <li>Análisis de calidad: <a href="https://sonarcloud.io/project/overview?id=jhony-hacku_Bizagi2_backend">SonarCloud del backend</a></li>
+                <li>Historias de usuario: <a href="https://desarrolloweb.click/proyecto/hitoriasusuario/">enunciado del curso</a></li>
+            </ul>
+        </section>
+
+        <section class="doc" id="calidad">
+            <h2>Calidad en cifras</h2>
+            <div class="cifras">
+                <div class="cifra"><strong>28 / 28</strong><span>historias de usuario implementadas</span></div>
+                <div class="cifra"><strong>37 / 37</strong><span>pruebas de sistema con Selenium</span></div>
+                <div class="cifra"><strong>427</strong><span>pruebas del backend aprobadas</span></div>
+                <div class="cifra"><strong>95,2 %</strong><span>cobertura del backend</span></div>
+                <div class="cifra"><strong>Aprobado</strong><span>quality gate de SonarCloud</span></div>
+                <div class="cifra"><strong>0</strong><span>bugs y vulnerabilidades</span></div>
+                <div class="cifra"><strong>0 %</strong><span>errores con 100 usuarios simultáneos (JMeter)</span></div>
+                <div class="cifra"><strong>130</strong><span>peticiones de API en la colección Postman (236 aserciones)</span></div>
+            </div>
         </section>
 
         <section class="doc" id="arquitectura">
             <h2>Arquitectura</h2>
-            <p>Arquitectura por capas:</p>
-<pre><code>Navegador -> Controller -> Repository (Spring Data JPA) -> PostgreSQL
-                 |
-                 +-> Plantilla Thymeleaf -> HTML</code></pre>
-            <table>
-                <tr><th>Paquete</th><th>Contenido</th></tr>
-                <tr><td><code>controller</code></td><td><code>InicioController</code>, <code>EstudianteController</code>, <code>ContactoController</code>, <code>DocumentacionController</code></td></tr>
-                <tr><td><code>entities</code></td><td><code>Estudiante</code>, <code>Contacto</code></td></tr>
-                <tr><td><code>repository</code></td><td><code>EstudianteRepository</code>, <code>ContactoRepository</code></td></tr>
-                <tr><td><code>resources/templates</code></td><td>Vistas Thymeleaf</td></tr>
-                <tr><td><code>resources/static</code></td><td>CSS e imágenes</td></tr>
-            </table>
+            <p>Vista de contenedores (modelo C4, nivel 2). El detalle de los cuatro niveles está en el documento 02.</p>
+            <figure>
+                <img th:src="@{/images/diagramas/c2.png}" alt="Diagrama de contenedores de Bizagi2">
+                <figcaption>Usuarios → Tailscale (HTTPS) → nginx → API Spring Boot → PostgreSQL, con réplica de solo lectura.</figcaption>
+            </figure>
         </section>
 
-        <section class="doc" id="modelo-datos">
-            <h2>Modelo de datos</h2>
-            <h3>Tabla <code>estudiantes</code></h3>
-            <table>
-                <tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
-                <tr><td>id</td><td>Integer (PK, autoincremental)</td><td>Identificador</td></tr>
-                <tr><td>nombre, apellido, email</td><td>String</td><td>Datos personales</td></tr>
-                <tr><td>edad, semestre</td><td>int</td><td>Datos académicos</td></tr>
-                <tr><td>imageUrl</td><td>String</td><td>Archivo en <code>/images</code></td></tr>
-                <tr><td>descripcion</td><td>String</td><td>Presentación del estudiante</td></tr>
-            </table>
-            <p>Los datos iniciales se cargan desde <code>data.sql</code> al arrancar.</p>
-            <h3>Tabla <code>contactos</code></h3>
-            <table>
-                <tr><th>Campo</th><th>Validación</th></tr>
-                <tr><td>nombre</td><td>Obligatorio, 2 a 100 caracteres</td></tr>
-                <tr><td>email</td><td>Obligatorio, formato de correo válido</td></tr>
-                <tr><td>asunto</td><td>Obligatorio, 3 a 150 caracteres</td></tr>
-                <tr><td>mensaje</td><td>Obligatorio, 10 a 1000 caracteres</td></tr>
-                <tr><td>created_at</td><td>Se asigna automáticamente al guardar</td></tr>
-            </table>
+        <section class="doc" id="despliegue">
+            <h2>Despliegue</h2>
+            <p>Cada cambio entra por pull request a <code>develop</code>, se prueba, se publica como imagen en GHCR y se despliega
+               solo en staging, donde corren las 37 pruebas de Selenium. Una versión (<code>vX.Y.Z</code>) pasa a producción
+               con aprobación manual. Detalle en el documento 03.</p>
+            <figure>
+                <img th:src="@{/images/diagramas/cicd.png}" alt="Flujo de integración y despliegue continuo">
+                <figcaption>Integración continua, staging automático y producción con aprobación.</figcaption>
+            </figure>
         </section>
 
-        <section class="doc" id="endpoints">
-            <h2>Endpoints</h2>
-            <table>
-                <tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr>
-                <tr><td>GET</td><td><code>/</code></td><td>Redirige a <code>/grupo</code></td></tr>
-                <tr><td>GET</td><td><code>/grupo</code></td><td>Lista de integrantes del equipo</td></tr>
-                <tr><td>GET</td><td><code>/estudiantes/{nombre}</code></td><td>Perfil de un estudiante; muestra la vista de error si no existe</td></tr>
-                <tr><td>GET</td><td><code>/contacto</code></td><td>Formulario de contacto</td></tr>
-                <tr><td>POST</td><td><code>/contacto</code></td><td>Valida y guarda el mensaje en PostgreSQL</td></tr>
-                <tr><td>GET</td><td><code>/documentacion</code></td><td>Esta página</td></tr>
-            </table>
-        </section>
+        <section class="doc" id="documentos">
+            <h2>Documentos de la entrega</h2>
+            <p>Selecciona un documento para verlo aquí. También puedes descargarlo en PDF o en Word.</p>
+            <ul class="lista-docs">
+                <li th:each="d, it : ${documentos}">
+                    <button type="button" class="doc-boton" th:classappend="${it.first} ? 'activo'"
+                            th:attr="data-archivo=${d.archivo},data-titulo=${d.codigo + ' · ' + d.titulo}">
+                        <span class="codigo" th:text="${d.codigo}">01</span>
+                        <span>
+                            <strong th:text="${d.titulo}">Título</strong>
+                            <small th:text="${d.descripcion}">Descripción</small>
+                        </span>
+                    </button>
+                </li>
+            </ul>
 
-        <section class="doc" id="contacto">
-            <h2>Formulario de contacto</h2>
-            <p>Se accede desde <code>/grupo</code> con el botón <strong>Contáctanos</strong>. Si los datos son
-               inválidos, se vuelve a mostrar el formulario con los errores; si son correctos, se guarda el
-               mensaje y se muestra una confirmación. Consulta de los mensajes guardados:</p>
-<pre><code>SELECT id, nombre, email, asunto, mensaje, created_at
-FROM contactos
-ORDER BY created_at DESC;</code></pre>
-        </section>
-
-        <section class="doc" id="ejecucion">
-            <h2>Ejecución</h2>
-            <h3>Con Docker</h3>
-<pre><code>docker compose up --build</code></pre>
-            <h3>Sin Docker</h3>
-            <p>Requiere PostgreSQL local con la base <code>wiki</code>. La conexión se configura con las variables
-               <code>DB_URL</code>, <code>DB_USER</code> y <code>DB_PASSWORD</code>
-               (por defecto <code>jdbc:postgresql://localhost:5432/wiki</code>, <code>postgres</code> y <code>javeriana</code>).</p>
-<pre><code>.\mvnw.cmd spring-boot:run</code></pre>
-            <p>La aplicación queda en <code>http://localhost:8080</code>.</p>
+            <div class="visor">
+                <div class="visor-barra">
+                    <strong id="visor-titulo" th:text="${documentos[0].codigo + ' · ' + documentos[0].titulo}">Documento</strong>
+                    <span>
+                        <a id="visor-pdf" th:href="@{/docs/{a}.pdf(a=${documentos[0].archivo})}" target="_blank" rel="noopener">Abrir PDF</a>
+                        <a id="visor-docx" th:href="@{/docs/{a}.docx(a=${documentos[0].archivo})}" download>Descargar .docx</a>
+                    </span>
+                </div>
+                <iframe id="visor-marco" title="Visor de documentos"
+                        th:src="@{/docs/{a}.pdf(a=${documentos[0].archivo})}"></iframe>
+            </div>
         </section>
 
         <section class="doc" id="equipo">
@@ -131,8 +125,31 @@ ORDER BY created_at DESC;</code></pre>
             </ul>
         </section>
 
-        <footer><p>&copy; 2026 Wiki del Equipo</p></footer>
+        <footer><p>&copy; 2026 Wiki del Equipo · Bizagi2</p></footer>
     </main>
 </div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    (function () {
+        const base = /*[[@{/docs/}]]*/ '/docs/';
+        const marco = document.getElementById('visor-marco');
+        const titulo = document.getElementById('visor-titulo');
+        const pdf = document.getElementById('visor-pdf');
+        const docx = document.getElementById('visor-docx');
+        document.querySelectorAll('.doc-boton').forEach(function (boton) {
+            boton.addEventListener('click', function () {
+                const archivo = boton.dataset.archivo;
+                marco.src = base + archivo + '.pdf';
+                pdf.href = base + archivo + '.pdf';
+                docx.href = base + archivo + '.docx';
+                titulo.textContent = boton.dataset.titulo;
+                document.querySelectorAll('.doc-boton').forEach(function (b) { b.classList.remove('activo'); });
+                boton.classList.add('activo');
+            });
+        });
+    })();
+    /*]]>*/
+</script>
 </body>
 </html>

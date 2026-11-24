@@ -17,3 +17,24 @@ pre { background: #1e1e1e; color: #e6e6e6; padding: 14px; border-radius: 6px; ov
 pre code { background: none; color: inherit; padding: 0; }
 .volver { display: inline-block; margin-top: 10px; color: #1a5fb4; }
 @media (max-width: 800px) { .doc-layout { flex-direction: column; } .doc-nav { position: static; } }
+
+/* Documentacion de Bizagi2: cifras, figuras y visor de documentos */
+a { color: #1a5fb4; }
+figure { margin: 10px 0; }
+figure img { max-width: 100%; height: auto; border: 1px solid #eee; border-radius: 6px; background: #fff; }
+figcaption { font-size: .9em; color: #555; margin-top: 4px; }
+.cifras { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.cifra { background: #f4f8fc; border: 1px solid #dce8f1; border-radius: 8px; padding: 12px; }
+.cifra strong { display: block; font-size: 1.5em; color: #1a5fb4; }
+.cifra span { font-size: .9em; color: #444; }
+.lista-docs { list-style: none; padding: 0; margin: 10px 0 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; }
+.doc-boton { width: 100%; display: flex; gap: 10px; align-items: flex-start; text-align: left; background: #fff; border: 1px solid #ddd;
+             border-radius: 8px; padding: 10px; cursor: pointer; font: inherit; color: inherit; }
+.doc-boton:hover { border-color: #1a5fb4; }
+.doc-boton.activo { border-color: #1a5fb4; background: #f4f8fc; }
+.doc-boton .codigo { font-weight: bold; color: #fff; background: #1a5fb4; border-radius: 4px; padding: 2px 7px; }
+.doc-boton small { display: block; color: #555; line-height: 1.35; margin-top: 2px; }
+.visor { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+.visor-barra { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 8px 12px; background: #f0f0f0; }
+.visor-barra a { margin-left: 12px; }
+.visor iframe { width: 100%; height: 80vh; border: 0; display: block; background: #fff; }
