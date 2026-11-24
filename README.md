@@ -214,3 +214,26 @@ Navegador
 ```
 
 Los datos de los estudiantes no se encuentran definidos directamente en las vistas. Los controladores consultan la información almacenada en PostgreSQL mediante los repositorios JPA y posteriormente la envían a las plantillas Thymeleaf para su renderizado dinámico.
+## Documentación de Bizagi2
+
+La página `/documentacion` (botón **Documentación** en `/grupo`) presenta el proyecto Bizagi2 y un visor con los
+8 documentos de la entrega final. Los archivos viven en `src/main/resources/static/docs/` en dos formatos:
+`.pdf` (lo que muestra el visor) y `.docx` (editable). Para actualizar un documento basta con reemplazar ambos
+archivos con el mismo nombre. Los diagramas están en `src/main/resources/static/images/diagramas/`.
+
+## Despliegue en el servidor
+
+El workflow `.github/workflows/ci.yml` compila, prueba y publica la imagen `ghcr.io/jhony-hacku/wiki-dearrollo`
+en cada push a `main`. En el servidor de producción de Bizagi2 (una sola vez):
+
+```bash
+sudo mkdir -p /opt/wiki && sudo chown deploy:deploy /opt/wiki && cd /opt/wiki
+# copiar deploy/compose.yml y deploy/.env.example (scp), luego:
+cp .env.example .env && sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$(openssl rand -hex 24)/" .env && chmod 600 .env
+docker compose pull && docker compose up -d
+sudo tailscale funnel --bg --https=8443 http://127.0.0.1:8081
+```
+
+La wiki queda en `https://<servidor>.ts.net:8443`. Para actualizarla: `docker compose pull && docker compose up -d`.
+Si el paquete de GHCR es privado, hay que marcarlo como público en GitHub (Packages → wiki-dearrollo →
+Package settings → Change visibility) o iniciar sesión en el servidor con `docker login ghcr.io`.
